@@ -37,46 +37,50 @@ class ViewStockMovement extends ViewRecord
     {
         if($this->checkQuantityInStock())
         {
+
             $details = StockMovementDetail::where(['stockMovementId'=>$this->record->id])
                             ->get();
 
             foreach($details as $detail)
             {
-                $stock = Stock::where(['warehouseId'=>$this->record->sourceWarehouseId])
-                            ->where(['productId'=>$detail->productId])
-                            ->first();
-                $stock->quantity = $stock->quantity - $detail->quantity;
-                $stock->save();
-
-                //Create new or update
-                $newStock = Stock::firstOrCreate([
-                        'warehouseId' =>$data['warehouseId']
+                //Create new or update destination warehouse stock
+                $destinationStock = Stock::firstOrCreate([
+                        'warehouseId' =>$data['warehouseId'],
+                        'productId' => $detail->productId,
                     ],
                     [
-                        'productId' => $detail->productId,
                         'quantity' => $detail->quantity,
                         'createdBy' => auth()->id()
                 ]);
 
-                if(!$newStock->wasRecentlyCreated)
+                if(!$destinationStock->wasRecentlyCreated)
                 {
-                    $newStock->quantity = $newStock->quantity + $detail->quantity;
-                    $newStock->save();
+                    $destinationStock->quantity = $destinationStock->quantity + $detail->quantity;
+                    $destinationStock->save();
                 }
+
+                //Update source warehouse Stock
+                $sourceStock = Stock::where(['warehouseId'=>$this->record->sourceWarehouseId])
+                            ->where(['productId'=>$detail->productId])
+                            ->first();
+                //dd($sourceStock);
+                $sourceStock->quantity = $sourceStock->quantity - $detail->quantity;
+                $sourceStock->save();
 
             }
 
+            //update stockMovement
             $this->record->destinationWarehouseId = $data['warehouseId'];
             $this->record->isDone = true;
             $this->record->save();
-            //dd($this->record->id);
-
             $this->notify('message','Stock Qantity was successfuly moved');
+
 
 
         }
         else
         $this->notify('warning','One of more stock quantity has been update, please Review Stocks');
+
         return redirect()->route('filament.resources.stock-movements.view',['record'=>$this->record->id]);
 
     }

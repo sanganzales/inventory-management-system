@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Status;
+use App\Models\User;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\BelongsToSelect;
@@ -37,6 +38,9 @@ class OrderResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-collection';
     protected static ?string $navigationGroup = 'Sales Management';
     protected static ?int $navigationSort = 3;
+
+
+
 
     public static function form(Form $form): Form
     {
@@ -104,6 +108,7 @@ class OrderResource extends Resource
                 ;
 
     }
+
 
     public static function getRelations(): array
     {

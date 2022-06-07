@@ -86,6 +86,7 @@ class PaymentsRelationManager extends HasManyRelationManager
     {
         return Payment::where('transactionId',1)->where('orderId',$this->ownerRecord->id);
     }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['createdBy'] = auth()->id();
@@ -124,7 +125,9 @@ class PaymentsRelationManager extends HasManyRelationManager
                                         ->get();
             foreach ($orderItems as $orderItem) {
 
-                    $stock = Stock::where('productId',$orderItem->item->productId)->first();
+                    $stock = Stock::where('productId',$orderItem->item->productId)
+                                ->where('warehouseId',$this->ownerRecord->counter->warehouseId)
+                                ->first();
                     $stock->quantity = $stock->quantity - $orderItem->quantity;
                     $stock->save();
 

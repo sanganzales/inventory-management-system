@@ -32,7 +32,7 @@ class ViewUser extends ViewRecord
 
     public function assignCounter($data)
     {
-        UserHasCounter::firstOrCreate([
+        UserHasCounter::create([
             'userId' => $this->record->id,
             'counterId' => $data['counterId']
         ]);
