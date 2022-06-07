@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WarehouseResource\Pages;
 
 use App\Filament\Resources\WarehouseResource;
+use App\Filament\Resources\WarehouseResource\Widgets\ProductOverview;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -10,18 +11,11 @@ class ViewUser extends ViewRecord
 {
     protected static string $resource = WarehouseResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderWidgets(): array
     {
-        return array_merge(parent::getActions(),[
-            Action::make('Move')
-                ->requiresConfirmation(true)
-                ->action('move')
-        ]);
+        return [
+                ProductOverview::class
+        ];
     }
 
-
-    public function move()
-    {
-        dd('yooo');
-    }
 }
