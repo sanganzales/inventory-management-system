@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\OrderResource\Widgets\WeeklyOrderOverview;
 use App\Models\Order;
 use App\Models\User;
 use Filament\Resources\Pages\ListRecords;
@@ -22,6 +23,14 @@ class ListOrders extends ListRecords
         else
         return Order::where('counterId','!=',0);
 
+    }
+
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+                    WeeklyOrderOverview::class
+        ];
     }
 
 }
