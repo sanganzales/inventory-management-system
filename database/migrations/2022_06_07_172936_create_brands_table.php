@@ -13,16 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('brandId')->nullable()->index();
-            //$table->foreignId('categoryId')->index();
             $table->string('name');
-            $table->longText('description');
-            $table->string('barcode')->unique()->nullable();
-            $table->unsignedBigInteger('security_stock')->default(0);
-            $table->decimal('price', 10, 2)->nullable();
-            $table->foreignId('createdBy');
             $table->timestamps();
         });
     }
@@ -34,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('brands');
     }
 };

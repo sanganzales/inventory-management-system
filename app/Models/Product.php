@@ -10,11 +10,13 @@ class Product extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'summary',
-        'content',
+        'description',
         'categoryId',
-        'subCategoryId',
-        'createdBy'
+        'createdBy',
+        'brandId',
+        'barcode',
+        'security_stock',
+        'price'
     ];
 
     public function user()
@@ -22,14 +24,14 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function Category()
+    public function Brand()
     {
-        return $this->belongsTo(Category::class,'categoryId');
+        return $this->belongsTo(Brand::class,'brandId');
     }
 
-    public function subCategory()
+    public function Categories()
     {
-        return $this->belongsTo(Category::class,'subCategoryId');
+        return $this->belongsToMany(Category::class,'category_product', 'categoryId', 'productId');
     }
 
     public function Stock()

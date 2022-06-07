@@ -40,8 +40,8 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Firstname'),
-                TextColumn::make('category.name')->label('Category'),
+                TextColumn::make('name')->label('Name'),
+                TextColumn::make('parent.name')->label('Parent'),
             ])
             ->filters([
                 //
