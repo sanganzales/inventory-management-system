@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\PaymentMode;
 use App\Models\Stock;
+use App\Models\User;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -52,9 +53,9 @@ class PaymentsRelationManager extends HasManyRelationManager
 
                                                 $totalAlreadyPaid = Payment::where('orderId',$livewire->ownerRecord->id)
                                                                             ->where('transactionId',1)->sum('amount');
-                                                $totalOrdered = OrderItem::join('items','order_items.itemId','items.id')
+                                                $totalOrdered = OrderItem::join('products','order_items.productId','products.id')
                                                                     ->where('orderId',$livewire->ownerRecord->id)
-                                                                    ->sum(DB::raw('( price* quantity) - discount'));
+                                                                    ->sum(DB::raw('price* quantity'));
 
                                                 if($value > ($totalOrdered-$totalAlreadyPaid))
                                                     $fail('Amount entered is greater than the remaining balance');
@@ -108,10 +109,10 @@ class PaymentsRelationManager extends HasManyRelationManager
     {
         $totalAlreadyPaid = Payment::where('orderId',$this->ownerRecord->id)
                                     ->where('transactionId',1)->sum('amount');
-        $totalOrdered = OrderItem::join('items','order_items.itemId','items.id')
+        $totalOrdered = OrderItem::join('products','order_items.productId','products.id')
                             ->where('orderId',$this->ownerRecord->id)
-                            ->sum(DB::raw('( price* quantity) - discount'));
-        if($totalAlreadyPaid === $totalOrdered)
+                            ->sum(DB::raw('price* quantity'));
+        if((int)$totalAlreadyPaid === (int)$totalOrdered)
         {
             //changing order status to completed
             $order = Order::find($this->ownerRecord->id);
@@ -120,13 +121,15 @@ class PaymentsRelationManager extends HasManyRelationManager
 
 
             //updating stock quantity
-            $orderItems = OrderItem::join('items','order_items.itemId','items.id')
+            $orderItems = OrderItem::join('products','order_items.productId','products.id')
                                         ->where('orderId',$this->ownerRecord->id)
                                         ->get();
+            $user = User::find(auth()->id())->load('userHasCounter');
+            //dd($user);
             foreach ($orderItems as $orderItem) {
 
-                    $stock = Stock::where('productId',$orderItem->item->productId)
-                                ->where('warehouseId',$this->ownerRecord->counter->warehouseId)
+                    $stock = Stock::where('productId',$orderItem->productId)
+                                ->where('warehouseId',$user->userHasCounter->counter->warehouseId)
                                 ->first();
                     $stock->quantity = $stock->quantity - $orderItem->quantity;
                     $stock->save();

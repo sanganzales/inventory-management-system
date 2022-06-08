@@ -12,7 +12,7 @@ class OrderItem extends Model
 
     protected $fillable =[
         'orderId',
-        'itemId',
+        'productId',
         'quantity'
     ];
 
@@ -21,16 +21,16 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class,'orderId');
     }
 
-    public function Item()
+    public function Product()
     {
-        return $this->belongsTo(Item::class,'itemId');
+        return $this->belongsTo(Product::class,'productId');
     }
 
     protected function SubTotal():Attribute
     {
 
         return Attribute::make(
-            get:fn() => $this->item? $this->quantity * $this->item->price: 0
+            get:fn() => $this->product? $this->quantity * $this->product->price: 0
         );
     }
 }

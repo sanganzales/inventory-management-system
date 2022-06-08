@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderItemResource;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\Stock;
 use App\Models\User;
 use Closure;
@@ -34,8 +35,7 @@ class OrderItemsRelationManager extends HasManyRelationManager
         return $form
             ->schema(
                 [
-                    Select::make('itemId')->options(Item::all()->where('product.stock.quantity','>',0)
-                                                                ->pluck('product.name','id'))
+                    Select::make('productId')->options(Product::all()->pluck('name','id'))
                                              ->required()
                                              ->searchable(),
                     TextInput::make('quantity')->required()
@@ -44,8 +44,7 @@ class OrderItemsRelationManager extends HasManyRelationManager
                                                ->rules([function(Closure $get,$livewire){
                                                     return function (string $attribute,$value,Closure $fail) use($get,$livewire){
                                                         $user = User::find(auth()->id());
-                                                        $isItemStillInStock = Stock::join('items','items.productId','stocks.productId')
-                                                                                            ->where('items.id',$get('itemId'))
+                                                        $isItemStillInStock = Stock::where('productId',$get('productId'))
                                                                                             ->where('stocks.quantity','>=',$value)
                                                                                             ->where('warehouseId',$livewire->ownerRecord->counterId)
                                                                                             ->count('stocks.id');
@@ -62,8 +61,8 @@ class OrderItemsRelationManager extends HasManyRelationManager
         return $table
             ->columns(
                 [
-                    TextColumn::make('item.product.name'),
-                    TextColumn::make('item.price')->label('Price')->money('rwf'),
+                    TextColumn::make('product.name'),
+                    TextColumn::make('product.price')->label('Price')->money('rwf'),
                     TextColumn::make('quantity'),
                     TextColumn::make('subTotal')->money('rwf'),
 
@@ -96,20 +95,25 @@ class OrderItemsRelationManager extends HasManyRelationManager
         return $isPayed === 3? false:true;
     }
 
-    protected function afterCreate()
-    {
-
-        $totalOrdered = OrderItem::join('items','order_items.itemId','items.id')
-                            ->where('orderId',$this->ownerRecord->id)
-                            ->sum(DB::raw('( price* quantity) - discount'));
-        $this->ownerRecord->total=$totalOrdered;
-    }
-
     protected function canEdit(Model $record): bool
     {
         $isPayed = Order::all()->where('id',$this->ownerRecord->id)->pluck('statusId')->first();
 
         return $isPayed === 3? false:true;
+    }
+
+    protected function afterCreate()
+    {
+
+        $totalOrdered = OrderItem::join('products','order_items.productId','products.id')
+                            ->where('orderId',$this->ownerRecord->id)
+                            ->sum(DB::raw('price* quantity'));
+        $this->ownerRecord->amount=$totalOrdered;
+        $this->ownerRecord->statusId=2;
+        $this->ownerRecord->save();
+        return redirect()->route('filament.resources.orders.view',['record'=>$this->ownerRecord->id]);
+
+
     }
 
 }
