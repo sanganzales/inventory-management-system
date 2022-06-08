@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('orderReferenceNumber')->index();
             $table->foreignId('customerId')->index();
             $table->foreignId('statusId')->index()->default(1);
+            $table->bigInteger('amount');
             $table->foreignId('createdBy');
             $table->timestamps();
         });
