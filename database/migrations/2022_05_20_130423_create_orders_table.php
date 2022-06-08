@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('customerId')->index();
             $table->foreignId('counterId')->index();
             $table->foreignId('statusId')->index()->default(1);
-            $table->bigInteger('amount');
+            $table->bigInteger('amount')->default(0);
             $table->foreignId('createdBy');
             $table->timestamps();
         });

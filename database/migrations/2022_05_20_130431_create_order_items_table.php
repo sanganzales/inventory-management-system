@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('orderId');
-            $table->foreignId('itemId');
+            $table->foreignId('productId');
             $table->integer('quantity');
             $table->timestamps();
         });

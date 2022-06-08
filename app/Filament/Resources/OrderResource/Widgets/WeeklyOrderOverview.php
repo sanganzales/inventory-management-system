@@ -25,7 +25,7 @@ class WeeklyOrderOverview extends BaseWidget
                                     ->where(['transactionId'=>1])
                                     ->where('counterId',$user->UserHasCounter->counterId)
                                     ->whereBetween('payments.created_at',[now()->startOfWeek(),now()->endOfWeek()])
-                                    ->sum('amount');
+                                    ->sum('payments.amount');
         }
         else
         {
@@ -36,7 +36,7 @@ class WeeklyOrderOverview extends BaseWidget
                     ->where(['transactionId'=>1])
                     ->where('counterId','!=',0)
                     ->whereBetween('payments.created_at',[now()->startOfWeek(),now()->endOfWeek()])
-                    ->sum('amount');
+                    ->sum('payments.amount');
         }
 
         return [
