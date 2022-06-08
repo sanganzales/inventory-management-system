@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\OrderResource\Pages\ViewOrder;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemsRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\PaymentsRelationManager;
@@ -61,22 +62,8 @@ class OrderResource extends Resource
                                         ->dehydrated(false)
                                         ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                                         ->label('Status'),
-                Placeholder::make('total')->content(function(Closure $get){
-                            $items = OrderItem::where('orderId',(int)$get('id'))->get();//->sum('quantity');
-                            $total=0;
-                            if(count($items)!==0)
-                            {
-                                for($i=0;$i<sizeof($items);$i++)
-                                {
-
-                                    $total = $total + ($items[$i]->item->price*$items[$i]->quantity);
-                                }
-
-                            }
-
-
-                            return $total;
-                } )->label('Total Amount')->reactive()
+                TextInput::make('amount')->label('Total Amount')
+                                         ->visible(fn($livewire) => $livewire instanceof ViewOrder),
 
             ]);
     }
