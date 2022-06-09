@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Filament\Widgets\LineChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -44,9 +45,10 @@ class OrdersChart extends LineChartWidget
                 [
                     'label' => 'Blog posts created',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'borderColor' => 'rgb(0, 191, 255)',
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m', $value->date)->format('M')), //$value->date
         ];
     }
 }
