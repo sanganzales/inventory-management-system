@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 
 class OrdersChart extends LineChartWidget
 {
-    public ?string $filter = 'today';
+    public ?string $filter = 'year';
     protected static ?int $sort = 2;
 
 
@@ -18,8 +18,8 @@ class OrdersChart extends LineChartWidget
     {
         return [
             'today' => 'Today',
-            'week' => 'Last week',
-            'month' => 'Last month',
+            'week' => 'This week',
+            'month' => 'This month',
             'year' => 'This year',
         ];
     }
@@ -31,24 +31,107 @@ class OrdersChart extends LineChartWidget
     protected function getData(): array
     {
         $activeFilter = $this->filter;
-        $data = Trend::model(Order::class)
-                        ->between(
-                            start: now()->startOfYear(),
-                            end: now()->endOfYear(),
-                        )
-                        ->perMonth()
-                        ->count();
-
-
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Blog posts created',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    'borderColor' => 'rgb(0, 191, 255)',
+        if($activeFilter=='today')
+        {
+            return $this->getTodayChart();
+        }
+        else if($activeFilter=='week')
+        {
+            return $this->getWeekChart();
+        }
+        else if($activeFilter=='month')
+        {
+            return $this->getMonthChart();
+        }
+        else
+        {
+            $data = Trend::model(Order::class)
+            ->between(
+                start: now()->startOfYear(),
+                end: now()->endOfYear(),
+            )
+            ->perMonth()
+            ->count();
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Blog posts created',
+                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                        'borderColor' => 'rgb(0, 191, 255)',
+                    ],
                 ],
-            ],
-            'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m', $value->date)->format('M')), //$value->date
-        ];
+                'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m', $value->date)->format('M')), //$value->date
+            ];
+        }
+
+
+
+
     }
+    //Today Chart
+    public function getTodayChart()
+    {
+        $data = Trend::model(Order::class)
+            ->between(
+                start: now()->startOfDay(),
+                end: now()->endOfDay(),
+            )
+            ->perHour()
+            ->count();
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Blog posts created',
+                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                        'borderColor' => 'rgb(0, 191, 255)',
+                    ],
+                ],
+                'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m-d H:i', $value->date)->format('H:i')), //$value->date
+            ];
+    }
+
+    //This Week Chart
+    public function getWeekChart()
+    {
+        $data = Trend::model(Order::class)
+            ->between(
+                start: now()->startOfWeek(),
+                end: now()->endOfWeek(),
+            )
+            ->perDay()
+            ->count();
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Blog posts created',
+                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                        'borderColor' => 'rgb(0, 191, 255)',
+                    ],
+                ],
+                'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m-d', $value->date)->format('D')), //$value->date
+            ];
+    }
+
+    //This Month Chart
+    public function getMonthChart()
+    {
+        $data = Trend::model(Order::class)
+            ->between(
+                start: now()->startOfMonth(),
+                end: now()->endOfMonth(),
+            )
+            ->perDay()
+            ->count();
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Blog posts created',
+                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                        'borderColor' => 'rgb(0, 191, 255)',
+                    ],
+                ],
+                'labels' => $data->map(fn (TrendValue $value) => Carbon::createFromFormat('Y-m-d', $value->date)->format('d')), //$value->date
+            ];
+    }
+
 }
