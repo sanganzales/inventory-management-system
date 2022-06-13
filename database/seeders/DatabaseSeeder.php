@@ -29,61 +29,61 @@ class DatabaseSeeder extends Seeder
 
 
     //ADDING INITIAL ROLE
-    Role::factory()->create([
-        'name'=>'super_admin',
-        'guard_name'=>'web'
-    ]);
+    // Role::factory()->create([
+    //     'name'=>'super_admin',
+    //     'guard_name'=>'web'
+    // ]);
 
-        //ADDING NEW USER
-        $user = User::factory()->create([
-                'name'=>'James Ganza',
-                'email'=>'james.ganza@gmail.com',
-                'password'=> bcrypt('1123581321'),
-                'roleId' => 1,
-        ]);
+    //     //ADDING NEW USER
+    //     $user = User::factory()->create([
+    //             'name'=>'James Ganza',
+    //             'email'=>'james.ganza@gmail.com',
+    //             'password'=> bcrypt('1123581321'),
+    //             'roleId' => 1,
+    //     ]);
 
-        //ADDING STATUS
-        Status::factory()->create([
-            'name'=>'Processing'
-        ]);
-        Status::factory()->create([
-            'name'=>'Cancelled'
-        ]);
-        Status::factory()->create([
-            'name'=>'Paid'
-        ]);
+    //     //ADDING STATUS
+    //     Status::factory()->create([
+    //         'name'=>'Processing'
+    //     ]);
+    //     Status::factory()->create([
+    //         'name'=>'Cancelled'
+    //     ]);
+    //     Status::factory()->create([
+    //         'name'=>'Paid'
+    //     ]);
 
-        //ADDING PAYMENT MODES
-        PaymentMode::factory()->create([
-            'name'=>'Cash',
-            'createdBy'=>1
-        ]);
-        PaymentMode::factory()->create([
-            'name'=>'Mobile Money',
-            'createdBy'=>1
-        ]);
-        PaymentMode::factory()->create([
-            'name'=>'Bank Debit/Credit Card',
-            'createdBy'=>1
-        ]);
+    //     //ADDING PAYMENT MODES
+    //     PaymentMode::factory()->create([
+    //         'name'=>'Cash',
+    //         'createdBy'=>1
+    //     ]);
+    //     PaymentMode::factory()->create([
+    //         'name'=>'Mobile Money',
+    //         'createdBy'=>1
+    //     ]);
+    //     PaymentMode::factory()->create([
+    //         'name'=>'Bank Debit/Credit Card',
+    //         'createdBy'=>1
+    //     ]);
 
-        //ADDING INITIAL TRANSACTION TYPES
-        TransactionType::factory()->create([
-            'name'=>'Credit'
-        ]);
-        TransactionType::factory()->create([
-            'name'=>'Debit'
-        ]);
+    //     //ADDING INITIAL TRANSACTION TYPES
+    //     TransactionType::factory()->create([
+    //         'name'=>'Credit'
+    //     ]);
+    //     TransactionType::factory()->create([
+    //         'name'=>'Debit'
+    //     ]);
 
-        //ADDING TRANSACTIONS
-        Transaction::factory()->create([
-            'name'=>'Sales',
-            'typeId'=>1
-        ]);
-        Transaction::factory()->create([
-            'name'=>'Purchases',
-            'typeId'=>2
-        ]);
+    //     //ADDING TRANSACTIONS
+    //     Transaction::factory()->create([
+    //         'name'=>'Sales',
+    //         'typeId'=>1
+    //     ]);
+    //     Transaction::factory()->create([
+    //         'name'=>'Purchases',
+    //         'typeId'=>2
+    //     ]);
 
 
 
