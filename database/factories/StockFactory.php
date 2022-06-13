@@ -19,7 +19,7 @@ class StockFactory extends Factory
         return [
             'productId'=>$this->faker->unique()->numberBetween($min=3,$max=42),
             'quantity'=>$this->faker->numberBetween($min=13,$max=40),
-            'warehouseId'=>2,
+            'warehouseId'=>1,
             'createdBy'=>1,
         ];
     }

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Brand;
+use App\Models\Stock;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class BrandSeeder extends Seeder
+class StockSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +15,6 @@ class BrandSeeder extends Seeder
      */
     public function run()
     {
-        Brand::factory()->count(10)->create();
+        Stock::factory()->count(40)->create();
     }
 }
