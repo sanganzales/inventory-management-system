@@ -17,7 +17,7 @@ class StockFactory extends Factory
     public function definition()
     {
         return [
-            'productId'=>$this->faker->unique()->numberBetween($min=3,$max=42),
+            'productId'=>$this->faker->unique()->numberBetween($min=6,$max=42),
             'quantity'=>$this->faker->numberBetween($min=13,$max=40),
             'warehouseId'=>1,
             'createdBy'=>1,
